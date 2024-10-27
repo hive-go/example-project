@@ -1,29 +1,40 @@
 package user
 
 import (
-	"github.com/hive-go/hive"
+  "github.com/gofiber/fiber/v2"
 )
 
-type UserServiceT struct{}
+type UserServiceStruct struct{}
 
-var UserService = UserServiceT{}
+var UserService = UserServiceStruct{}
 
-func (u *UserServiceT) GetUser(id string) hive.Map {
-	return hive.Map{
-		"id":      id,
-		"message": "User Retrieved",
-		"user":    hive.Map{"name": "John Doe"},
-	}
+func (u *UserServiceStruct) CreateUser(data *CreateUserDto) (any, error) {
+	return fiber.Map{
+		"message": "User created successfully !!!",
+	}, nil
 }
 
-func (u *UserServiceT) CreateUser(c *hive.Ctx) string {
-	return "User Created"
+
+func (u *UserServiceStruct) GetUsers() (any, error) {
+  return fiber.Map{
+    "message": "User retrieved successfully",
+  }, nil
 }
 
-func (u *UserServiceT) UpdateUser(c *hive.Ctx) string {
-	return "User Updated"
+func (u *UserServiceStruct) GetUserById(id string) (any, error) {
+  return fiber.Map{
+    "message": "User retrieved successfully for id " + id,
+  }, nil
 }
 
-func (u *UserServiceT) DeleteUser(c *hive.Ctx) string {
-	return "User Deleted"
+func (u *UserServiceStruct) UpdateUser(id string, data *UpdateUserDto) (any, error) {
+  return fiber.Map{
+    "message": "User updated successfully for id " + id,
+  }, nil
+}
+
+func (u *UserServiceStruct) DeleteUser(id string) (any, error) {
+  return fiber.Map{
+    "message": "User deleted successfully for id " + id,
+  }, nil
 }

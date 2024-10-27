@@ -1,25 +1,41 @@
 package user
 
 import (
+	"github.com/gofiber/fiber/v2"
 	"github.com/hive-go/hive"
 )
 
 var UserController = hive.CreateController()
 
 func init() {
-	UserController.Get("/user", func(c *hive.Ctx) any {
-		return UserService.GetUser("123")
+
+	UserController.SetConfig(hive.ControllerConfig{
+		Prefix: "/user",
+		Tag:    "User",
 	})
 
-	UserController.Post("/user", func(c *hive.Ctx) any {
-		return UserService.CreateUser(c)
+	UserController.ParseBody(CreateUserDto{}).Post("", func(c *fiber.Ctx) (any, error) {
+		body := c.Locals("body").(*CreateUserDto)
+		return UserService.CreateUser(body)
 	})
 
-	UserController.Put("/user", func(c *hive.Ctx) any {
-		return UserService.UpdateUser(c)
+	UserController.Get("", func(c *fiber.Ctx) (any, error) {
+		return UserService.GetUsers()
 	})
 
-	UserController.Delete("/user", func(c *hive.Ctx) any {
-		return UserService.DeleteUser(c)
+	UserController.Get("/:id", func(c *fiber.Ctx) (any, error) {
+		id := c.Params("id")
+		return UserService.GetUserById(id)
+	})
+
+	UserController.ParseBody(CreateUserDto{}).Patch("/:id", func(c *fiber.Ctx) (any, error) {
+		id := c.Params("id")
+		body := c.Locals("body").(*UpdateUserDto)
+		return UserService.UpdateUser(id, body)
+	})
+
+	UserController.Delete("/:id", func(c *fiber.Ctx) (any, error) {
+		id := c.Params("id")
+		return UserService.DeleteUser(id)
 	})
 }
